@@ -126,6 +126,10 @@ volatile uint8_t* ptrOutputs;
     SDIOBlockDevice blockDevice;
     RemoraComms comms(ptrRxData, ptrTxData, SPI1, PA_4);
 
+#elif defined TARGET_SKRPROV1_2
+    SDIOBlockDevice blockDevice;
+    RemoraComms comms(ptrRxData, ptrTxData, SPI2, PB_12);
+
 #endif
 
 // Watchdog
