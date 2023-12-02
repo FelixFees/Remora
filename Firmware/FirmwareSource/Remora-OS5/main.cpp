@@ -27,7 +27,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #if defined TARGET_LPC176X
 #include "SDBlockDevice.h"
 #elif defined TARGET_STM32F4
+#if !defined TARGET_SKRPROV1_2
 #include "SDIOBlockDevice.h"
+#else
+#include "SDBlockDevice.h" // for TARGET_SKRPROV1_2
+#endif
 #endif
 
 #include "configuration.h"
@@ -127,7 +131,7 @@ volatile uint8_t* ptrOutputs;
     RemoraComms comms(ptrRxData, ptrTxData, SPI1, PA_4);
 
 #elif defined TARGET_SKRPROV1_2
-    SDIOBlockDevice blockDevice;
+    SDBlockDevice blockDevice(PB_5, PA_6, PA_5, PA_4);  // mosi, miso, sclk, cs
     RemoraComms comms(ptrRxData, ptrTxData, SPI2, PB_12);
 
 #endif
@@ -200,7 +204,7 @@ void setup()
 {
     printf("\n2. Setting up DMA and threads\n");
 
-    #if defined TARGET_STM32F4
+    #if defined TARGET_STM32F4 /* && !defined TARGET_SKRPROV1_2 */
     // deinitialise the SDIO device to avoid DMA issues with the SPI DMA Slave on the STM32F
     blockDevice.deinit();
     #endif
